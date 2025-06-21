@@ -7,7 +7,8 @@ public class ScoreManager : MonoBehaviour
     public static ScoreManager Instance { get; private set; }
 
     [Header("Score UI")]
-    public TextMeshProUGUI scoreText;
+    public TextMeshProUGUI currentScoreText;  // Shown in Free Mode
+    public TextMeshProUGUI bestScoreText;     // Shown in Main Menu
 
     [Header("Score State")]
     public int score = 0;
@@ -17,7 +18,6 @@ public class ScoreManager : MonoBehaviour
 
     private void Awake()
     {
-        // Singleton logic
         if (Instance != null && Instance != this)
         {
             Destroy(gameObject);
@@ -25,7 +25,7 @@ public class ScoreManager : MonoBehaviour
         }
 
         Instance = this;
-        DontDestroyOnLoad(gameObject); // Optional if persisting between scenes
+        DontDestroyOnLoad(gameObject);
     }
 
     private void Start()
@@ -36,7 +36,10 @@ public class ScoreManager : MonoBehaviour
 
     private void Update()
     {
-        if (isCounting)
+        if (!isCounting) return;
+
+        // ✅ Increase score only when W or UpArrow is pressed
+        if (Input.GetKey(KeyCode.W) || Input.GetKey(KeyCode.UpArrow))
         {
             score += 1;
             UpdateScoreUI();
@@ -45,10 +48,13 @@ public class ScoreManager : MonoBehaviour
 
     private void UpdateScoreUI()
     {
-        if (scoreText != null)
-        {
-            scoreText.text = "Score: " + score.ToString();
-        }
+        // Update Free Mode Score
+        if (currentScoreText != null)
+            currentScoreText.text = "Score: " + score;
+
+        // Update Main Menu Best Score
+        if (bestScoreText != null)
+            bestScoreText.text = "Best: " + bestScore;
     }
 
     public void ResetScore()
@@ -69,11 +75,24 @@ public class ScoreManager : MonoBehaviour
             PlayerPrefs.Save();
         }
 
+        UpdateScoreUI();
         Debug.Log($"🛑 Score Stopped at: {score} | Best: {bestScore}");
     }
 
     public int GetBestScore()
     {
         return bestScore;
+    }
+
+    public void SetBestScoreTextReference(TextMeshProUGUI bestText)
+    {
+        bestScoreText = bestText;
+        UpdateScoreUI();
+    }
+
+    public void SetCurrentScoreTextReference(TextMeshProUGUI currentText)
+    {
+        currentScoreText = currentText;
+        UpdateScoreUI();
     }
 }

@@ -115,6 +115,8 @@ public class CarSelectionManager : MonoBehaviour
 
     public void StartFreeMode()
     {
+        ScoreManager.Instance?.ResetScore();
+
         // Hide any leftover panels from previous session
         GameObject winPanel = GameObject.Find("WinPanel");
         GameObject losePanel = GameObject.Find("LosePanel");
@@ -181,13 +183,7 @@ public class CarSelectionManager : MonoBehaviour
             Debug.LogError("❌ mainCamera or currentCar is null during camera setup.");
         }
 
-        // Reset Score
-        scoreManager = FindFirstObjectByType<ScoreManager>();
-        if (scoreManager != null)
-        {
-            scoreManager.ResetScore();
-            Debug.Log("🎯 Score reset.");
-        }
+    
 
         // Hide UI
         if (mainMenuCanvas != null)

@@ -10,8 +10,8 @@ public class ObstacleCollisionHandler : MonoBehaviour
             Debug.Log("💥 Player hit obstacle!");
 
             // Stop score and compare
-            ScoreManager.Instance.StopAndCompare();
-
+          //  ScoreManager.Instance.StopAndCompare();
+            ScoreManager.Instance?.StopAndCompare();
             // Return to menu (optional)
             MainMenuReturner.Instance.ReturnToMainMenu();
         }

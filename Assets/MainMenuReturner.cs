@@ -22,41 +22,49 @@ public class MainMenuReturner : MonoBehaviour
         foreach (Camera c in cams)
             Debug.Log("📸 Camera: " + c.name + ", enabled: " + c.enabled + ", tag: " + c.tag);
     }
-
     public void ReturnToMainMenu()
     {
         Time.timeScale = 0f;
 
+        // Reactivate UI
         if (mainMenuCanvas != null) mainMenuCanvas.SetActive(true);
         if (menuPanel != null) menuPanel.SetActive(true);
         if (carSelectionPanel != null) carSelectionPanel.SetActive(false);
 
+        // Get the main camera
         var cam = Camera.main;
         if (cam == null)
         {
-            cam = Camera.allCameras.FirstOrDefault(c => c.enabled); // ✅ now this works
-            Debug.LogWarning("⚠️ Camera.main was null. Found fallback camera: " + cam?.name);
+            cam = Camera.allCameras.FirstOrDefault(c => c.enabled);
+            Debug.LogWarning("⚠️ No Camera.main found. Fallback: " + cam?.name);
         }
 
+        // Detach from player and reset camera
         if (cam != null)
         {
+            cam.transform.SetParent(null);
             cam.enabled = true;
             cam.gameObject.SetActive(true);
             cam.tag = "MainCamera";
 
-            if (cam.transform.parent != null)
-                cam.transform.SetParent(null, true);
-
             cam.transform.position = new Vector3(0f, 5f, -15f);
             cam.transform.rotation = Quaternion.Euler(10f, 0f, 0f);
-        }
-        else
-        {
-            Debug.LogError("❌ No active camera found! Scene has no working camera.");
+            cam.nearClipPlane = 0.3f;
+            cam.farClipPlane = 1000f;
+            cam.fieldOfView = 60f;
+
+            // Reassign to CarSelectionManager
+            var csm = FindObjectOfType<CarSelectionManager>();
+            if (csm != null)
+            {
+                csm.mainCamera = cam;
+            }
         }
 
+        // 🚫 DO NOT destroy the main camera! Only cars.
         DestroyExistingCars();
-        Debug.Log("🏁 Returned to Main Menu after crash.");
+
+        Debug.Log("🏁 Returned to Main Menu.");
     }
 
     private void DestroyExistingCars()

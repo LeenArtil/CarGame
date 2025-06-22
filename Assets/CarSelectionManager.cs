@@ -23,6 +23,8 @@ public class CarSelectionManager : MonoBehaviour
     private GameObject currentCar;
     private int selectedCarIndex = -1;
     private ScoreManager scoreManager;
+    // 👇 At the top
+    public GameObject scoreUI;
 
     private void Awake()
     {
@@ -95,6 +97,7 @@ public class CarSelectionManager : MonoBehaviour
     {
         mainMenuPanel.SetActive(false);
         carSelectionPanel.SetActive(true);
+        scoreUI.SetActive(false);
     }
 
     private void AssignTagRecursively(Transform obj, string tag)
@@ -116,7 +119,7 @@ public class CarSelectionManager : MonoBehaviour
     public void StartFreeMode()
     {
         ScoreManager.Instance?.ResetScore();
-
+        scoreUI.SetActive(true);
         // Hide any leftover panels from previous session
         GameObject winPanel = GameObject.Find("WinPanel");
         GameObject losePanel = GameObject.Find("LosePanel");
@@ -194,6 +197,7 @@ public class CarSelectionManager : MonoBehaviour
 
     public void StartRaceMode()
     {
+        scoreUI.SetActive(false);
         // Hide Win/Lose panels if they exist
         GameObject winPanel = GameObject.Find("WinPanel");
         GameObject losePanel = GameObject.Find("LosePanel");

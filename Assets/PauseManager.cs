@@ -36,14 +36,11 @@ public class PauseManager : MonoBehaviour
 
     public void ReturnToMenu()
     {
-        Time.timeScale = 1f; // ✅ Resume time to normal
-
-        pausePanel.SetActive(false);     // Hide pause panel
-        mainMenuPanel.SetActive(true);   // Show main menu
-        scoreUI.SetActive(false);
-        //  carSelectionPanel.SetActive(true);
-     
+        Time.timeScale = 1f; // Resume time
+        MainMenuReturner.Instance.ReturnToMainMenu(); // SAFE and tested
+        pausePanel.SetActive(false);
     }
+
     private void TogglePause()
     {
         isPaused = !isPaused; // Flip the pause state
